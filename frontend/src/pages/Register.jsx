@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { apiRegister } from "../services/mockData";
+import { apiRegister } from "../services/backend";
 import { UtensilsCrossed, Eye, EyeOff } from "lucide-react";
 import toast from "react-hot-toast";
 import "./Auth.css";

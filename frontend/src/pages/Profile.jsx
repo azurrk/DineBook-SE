@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { apiUpdateProfile } from "../services/mockData";
+import { apiUpdateProfile } from "../services/backend";
 import { User, Mail, Phone, Save, CalendarDays } from "lucide-react";
 import toast from "react-hot-toast";
 import { format } from "date-fns";

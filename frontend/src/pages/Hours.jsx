@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { apiGetWorkingHours } from "../services/mockData";
+import { apiGetWorkingHours } from "../services/backend";
 import { Clock, CheckCircle2, XCircle } from "lucide-react";
 import "./Hours.css";
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiGetAvailableTables, apiCreateReservation } from "../services/mockData";
+import { apiGetAvailableTables, apiCreateReservation } from "../services/backend";
 import { Search, Users, MapPin, Check, ChevronRight, CalendarDays, Clock } from "lucide-react";
 import toast from "react-hot-toast";
 import { format, addDays } from "date-fns";
