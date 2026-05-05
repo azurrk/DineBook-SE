@@ -2,6 +2,8 @@
 
 > A web-based restaurant table reservation platform — browse tables, book in seconds, manage everything from an admin dashboard.
 
+#### Preview Link: https://dine-book-se.vercel.app
+
 ---
 
 ## Table of Contents
@@ -14,7 +16,6 @@
 - [API Overview](#api-overview)
 - [Project Paper](#project-paper)
 - [Non-Functional Requirements](#non-functional-requirements)
-- [Contributing](#contributing)
 
 ---
 
