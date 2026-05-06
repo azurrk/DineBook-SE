@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { apiGetReservations, apiCancelReservation, apiUpdateReservation } from "../services/mockData";
+import { apiGetReservations, apiCancelReservation, apiUpdateReservation } from "../services/backend";
 import { CalendarDays, Clock, Users, MapPin, Pencil, X, Check, History, Plus } from "lucide-react";
 import toast from "react-hot-toast";
 import EditReservationModal from "../components/reservation/EditReservationModal";
