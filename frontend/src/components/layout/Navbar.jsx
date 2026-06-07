@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { UtensilsCrossed, Menu, X, CalendarDays, User, LogOut, Clock } from "lucide-react";
+import { UtensilsCrossed, Menu, X, CalendarDays, User, LogOut, Clock, ShieldCheck } from "lucide-react";
 import "./Navbar.css";
 
 export default function Navbar() {
@@ -36,6 +36,11 @@ export default function Navbar() {
               <NavLink to="/profile" className="nav-link" onClick={() => setOpen(false)}>
                 <User size={16} /> Profile
               </NavLink>
+              {user.role === "admin" && (
+                <NavLink to="/admin" className="nav-link" onClick={() => setOpen(false)}>
+                  <ShieldCheck size={16} /> Admin
+                </NavLink>
+              )}
               <Link to="/reserve" className="btn btn-primary btn-sm" onClick={() => setOpen(false)}>
                 Book a Table
               </Link>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { apiGetAvailableTables, apiCreateReservation } from "../services/backend";
+import { apiGetAvailableTables, apiCreateReservation, apiGetFloorPlan } from "../services/backend";
 import { Search, Users, MapPin, Check, ChevronRight, CalendarDays, Clock } from "lucide-react";
 import toast from "react-hot-toast";
 import { format, addDays } from "date-fns";
@@ -25,6 +25,7 @@ export default function MakeReservation() {
 
   // Step 1
   const [tables, setTables] = useState([]);
+  const [floorTables, setFloorTables] = useState([]);
   const [selectedTable, setSelectedTable] = useState(null);
 
   // Step 2
@@ -40,8 +41,12 @@ export default function MakeReservation() {
     if (Object.keys(errs).length) { setSearchErr(errs); return; }
     setSearching(true);
     try {
-      const result = await apiGetAvailableTables(search);
+      const [result, floorPlan] = await Promise.all([
+        apiGetAvailableTables(search),
+        apiGetFloorPlan(search),
+      ]);
       setTables(result);
+      setFloorTables(floorPlan);
       setSelectedTable(null);
       setStep(1);
     } catch {
@@ -142,24 +147,49 @@ export default function MakeReservation() {
               <button className="btn btn-outline" onClick={() => setStep(0)}>Search Again</button>
             </div>
           ) : (
-            <div className="tables-grid">
-              {tables.map((t) => (
-                <div
-                  key={t.id}
-                  className={`table-card ${selectedTable?.id === t.id ? "selected" : ""}`}
-                  onClick={() => setSelectedTable(t)}
-                >
-                  {selectedTable?.id === t.id && (
-                    <div className="table-check"><Check size={14} /></div>
-                  )}
-                  <div className="table-number">{t.number}</div>
-                  <div className="table-info">
-                    <span><Users size={14} /> Up to {t.capacity} guests</span>
-                    <span><MapPin size={14} /> {t.location}</span>
+            <>
+              <div className="floor-plan" aria-label="Restaurant floor plan">
+                <div className="floor-zone floor-window">Window</div>
+                <div className="floor-zone floor-terrace">Terrace</div>
+                {floorTables.map((t) => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    className={`floor-table ${t.available ? "available" : "unavailable"} ${selectedTable?.id === t.id ? "selected" : ""}`}
+                    style={{ left: `${t.x || 10}%`, top: `${t.y || 10}%` }}
+                    onClick={() => t.available && setSelectedTable(t)}
+                    disabled={!t.available}
+                    title={`${t.number}, ${t.capacity} seats, ${t.location}`}
+                  >
+                    {t.number}
+                  </button>
+                ))}
+              </div>
+              <div className="floor-legend">
+                <span><i className="legend-dot available" /> Available</span>
+                <span><i className="legend-dot selected" /> Selected</span>
+                <span><i className="legend-dot unavailable" /> Unavailable</span>
+              </div>
+
+              <div className="tables-grid">
+                {tables.map((t) => (
+                  <div
+                    key={t.id}
+                    className={`table-card ${selectedTable?.id === t.id ? "selected" : ""}`}
+                    onClick={() => setSelectedTable(t)}
+                  >
+                    {selectedTable?.id === t.id && (
+                      <div className="table-check"><Check size={14} /></div>
+                    )}
+                    <div className="table-number">{t.number}</div>
+                    <div className="table-info">
+                      <span><Users size={14} /> Up to {t.capacity} guests</span>
+                      <span><MapPin size={14} /> {t.location}</span>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </>
           )}
 
           {selectedTable && (
