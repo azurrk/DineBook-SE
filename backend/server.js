@@ -9,6 +9,8 @@ const reservationController = require('./controllers/reservationController');
 const workingHoursController = require('./controllers/workingHoursController');
 const reviewController = require('./controllers/reviewController');
 const { authenticateToken, requireAdmin } = require('./middleware/auth');
+const fs = require('fs');          
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT
