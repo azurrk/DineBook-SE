@@ -11,7 +11,7 @@ const reviewController = require('./controllers/reviewController');
 const { authenticateToken, requireAdmin } = require('./middleware/auth');
 
 const app = express();
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT
 
 app.use(cors());
 app.use(express.json());
@@ -62,15 +62,12 @@ async function migrateDB() {
   }
 }
 
-// Osiguraj da je PORT definisan iznad if bloka
-const PORT = process.env.PORT || 5000;
 
 if (require.main === module) {
-  // DODATE ZAGRADE OVDJE: migrateDB()
   migrateDB().then(() => {
     app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-      console.log(`API Documentation available at http://localhost:${PORT}/api-docs`);
+      console.log(`🚀 Server running on port ${PORT}`);
+      console.log(`API Documentation available at /api-docs`);
     });
   });
 }
