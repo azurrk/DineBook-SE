@@ -10,11 +10,28 @@ class WorkingHoursService {
     return await workingHoursRepository.findByDay(day);
   }
 
+  timeToMinutes(value) {
+    const [hours, minutes] = String(value).slice(0, 5).split(':').map(Number);
+    return hours * 60 + minutes;
+  }
+
   async isReservationTimeAllowed(date, time) {
     const hours = await this.getDayHours(date);
     if (!hours || hours.closed) return false;
-    const reservationTime = time.slice(0, 5);
-    return reservationTime >= hours.open.slice(0, 5) && reservationTime < hours.close.slice(0, 5);
+
+    const reservationMin = this.timeToMinutes(time);
+    const openMin = this.timeToMinutes(hours.open);
+    let closeMin = this.timeToMinutes(hours.close);
+
+    // 00:00 close with a later open means "open until midnight"
+    if (closeMin === 0 && openMin > 0) closeMin = 24 * 60;
+
+    if (closeMin > openMin) {
+      return reservationMin >= openMin && reservationMin < closeMin;
+    }
+
+    // Overnight hours (e.g. 18:00 – 02:00)
+    return reservationMin >= openMin || reservationMin < closeMin;
   }
 
   async updateWorkingHours(hoursByDay) {
