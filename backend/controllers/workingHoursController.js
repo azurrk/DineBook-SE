@@ -52,6 +52,15 @@ class WorkingHoursController {
       res.status(500).json({ error: error.message });
     }
   }
+
+  async updateWorkingHours(req, res) {
+    try {
+      const workingHours = await workingHoursService.updateWorkingHours(req.body);
+      res.json(workingHours);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
 }
 
 module.exports = new WorkingHoursController();

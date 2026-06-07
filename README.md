@@ -60,6 +60,32 @@
 - Search reservations by customer name or email
 - Deactivate user accounts
 
+## Implemented Architecture and Patterns
+
+- **Layered architecture / MVC-style backend:** Express routes delegate to controllers, controllers delegate business decisions to services, and services persist through repositories. This keeps HTTP concerns, business rules, and SQL separate.
+- **Repository pattern:** `backend/repositories/*Repository.js` isolates database queries for users, tables, reservations, reviews, and working hours. Services can be tested by replacing repository methods without a live database.
+- **Strategy pattern:** `backend/patterns/reservationStatusStrategies.js` defines different status-transition rules for customers and admins. This prevents invalid actions such as a customer marking a reservation completed.
+- **Observer pattern:** `backend/services/notificationService.js` publishes reservation events to subscribed notification channels. Reservation creation, cancellation, and approval can trigger email/log channels without coupling booking logic to notification delivery.
+
+## Tests
+
+Backend tests use Node's built-in test runner and cover the main business flows:
+
+- Password hashing and customer token creation
+- Inactive account login rejection
+- Reservation rejection outside working hours
+- Double-booking prevention
+- Customer/admin reservation status rules
+- Review creation after a visit
+- Floor-plan availability data
+
+Run them with:
+
+```bash
+cd backend
+npm test
+```
+
 ---
 
 ## Project Roadmap

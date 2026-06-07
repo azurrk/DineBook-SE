@@ -12,6 +12,7 @@ import Reservations from "./pages/Reservations";
 import MakeReservation from "./pages/MakeReservation";
 import Profile from "./pages/Profile";
 import Hours from "./pages/Hours";
+import Admin from "./pages/Admin";
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
           <Route path="/reservations" element={<ProtectedRoute><Reservations /></ProtectedRoute>} />
           <Route path="/reserve" element={<ProtectedRoute><MakeReservation /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <Toaster

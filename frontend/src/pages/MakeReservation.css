@@ -87,6 +87,74 @@
 }
 .results-summary { font-size: 0.9rem; color: var(--text-muted); }
 
+.floor-plan {
+  position: relative;
+  height: 330px;
+  background:
+    linear-gradient(90deg, rgba(200,118,42,0.12) 0 1px, transparent 1px 100%),
+    linear-gradient(0deg, rgba(200,118,42,0.12) 0 1px, transparent 1px 100%),
+    #fff;
+  background-size: 40px 40px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.floor-zone {
+  position: absolute;
+  color: rgba(44,26,14,0.34);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+}
+.floor-window { left: 16px; top: 14px; }
+.floor-terrace { right: 16px; top: 14px; }
+
+.floor-table {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: 2px solid var(--green);
+  background: #E7F4E4;
+  color: #23582D;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+.floor-table.unavailable {
+  border-color: #bbb;
+  background: #eee;
+  color: #777;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+.floor-table:hover { transform: translate(-50%, -50%) scale(1.05); }
+.floor-table.unavailable:hover { transform: translate(-50%, -50%); }
+.floor-table.selected {
+  border-color: var(--amber);
+  background: var(--amber);
+  color: #fff;
+  box-shadow: 0 0 0 5px rgba(200,118,42,0.18);
+}
+
+.floor-legend {
+  display: flex;
+  gap: 16px;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  margin-bottom: 20px;
+}
+.floor-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.legend-dot.available { background: var(--green); }
+.legend-dot.selected { background: var(--amber); }
+.legend-dot.unavailable { background: #999; }
+
 .tables-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));

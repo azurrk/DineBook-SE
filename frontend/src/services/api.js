@@ -1,16 +1,18 @@
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'http://localhost:5001/api';
 
 class ApiService {
   constructor() {
     this.baseURL = API_BASE_URL;
-    this.token = localStorage.getItem('authToken');
+    this.token = localStorage.getItem('dinebook_token') || localStorage.getItem('authToken');
   }
 
   setToken(token) {
     this.token = token;
     if (token) {
+      localStorage.setItem('dinebook_token', token);
       localStorage.setItem('authToken', token);
     } else {
+      localStorage.removeItem('dinebook_token');
       localStorage.removeItem('authToken');
     }
   }
@@ -65,6 +67,10 @@ class ApiService {
       method: 'PUT',
       body: JSON.stringify(data),
     });
+  }
+
+  async delete(endpoint) {
+    return this.request(endpoint, { method: 'DELETE' });
   }
 }
 

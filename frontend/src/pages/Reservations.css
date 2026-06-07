@@ -128,6 +128,29 @@
   flex-shrink: 0;
 }
 
+.res-review {
+  color: var(--amber);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 140px;
+}
+.res-review span { display: inline-flex; gap: 2px; }
+.res-review small { color: var(--text-muted); max-width: 180px; }
+
+.review-modal {
+  width: min(440px, calc(100vw - 32px));
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
 .empty-res {
   text-align: center;
   padding: 72px 32px;

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { apiGetReservations, apiCancelReservation, apiUpdateReservation } from "../services/backend";
-import { CalendarDays, Clock, Users, MapPin, Pencil, X, Check, History, Plus } from "lucide-react";
+import { apiGetReservations, apiCancelReservation, apiUpdateReservation, apiCreateReview } from "../services/backend";
+import { CalendarDays, Clock, Users, MapPin, Pencil, X, History, Plus, Star } from "lucide-react";
 import toast from "react-hot-toast";
 import EditReservationModal from "../components/reservation/EditReservationModal";
 import "./Reservations.css";
@@ -19,6 +19,8 @@ export default function Reservations() {
   const [tab, setTab] = useState("upcoming");
   const [editTarget, setEditTarget] = useState(null);
   const [cancellingId, setCancellingId] = useState(null);
+  const [reviewTarget, setReviewTarget] = useState(null);
+  const [reviewForm, setReviewForm] = useState({ rating: 5, comment: "" });
 
   useEffect(() => {
     apiGetReservations(user.id)
@@ -57,6 +59,27 @@ export default function Reservations() {
       setReservations((prev) => prev.map((r) => r.id === id ? updated : r));
       setEditTarget(null);
       toast.success("Reservation updated.");
+    } catch (err) {
+      toast.error(err.message);
+    }
+  };
+
+  const handleReview = async (e) => {
+    e.preventDefault();
+    try {
+      const review = await apiCreateReview({
+        reservationId: reviewTarget.id,
+        rating: reviewForm.rating,
+        comment: reviewForm.comment,
+      });
+      setReservations((prev) => prev.map((r) => (
+        r.id === reviewTarget.id
+          ? { ...r, reviewId: review.id, reviewRating: review.rating, reviewComment: review.comment }
+          : r
+      )));
+      setReviewTarget(null);
+      setReviewForm({ rating: 5, comment: "" });
+      toast.success("Review added.");
     } catch (err) {
       toast.error(err.message);
     }
@@ -133,7 +156,7 @@ export default function Reservations() {
                   </div>
                 )}
               </div>
-              {r.status === "confirmed" && tab === "upcoming" && (
+              {["pending", "confirmed"].includes(r.status) && tab === "upcoming" && (
                 <div className="res-actions">
                   <button
                     className="btn btn-ghost btn-sm"
@@ -152,6 +175,19 @@ export default function Reservations() {
                   </button>
                 </div>
               )}
+              {tab === "history" && r.status !== "cancelled" && !r.reviewId && (
+                <div className="res-actions">
+                  <button className="btn btn-outline btn-sm" onClick={() => setReviewTarget(r)}>
+                    <Star size={14} /> Review
+                  </button>
+                </div>
+              )}
+              {r.reviewId && (
+                <div className="res-review">
+                  <span>{Array.from({ length: r.reviewRating || 0 }).map((_, index) => <Star key={index} size={13} fill="currentColor" />)}</span>
+                  {r.reviewComment && <small>{r.reviewComment}</small>}
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -164,6 +200,30 @@ export default function Reservations() {
           onSave={(data) => handleEdit(editTarget.id, data)}
           onClose={() => setEditTarget(null)}
         />
+      )}
+
+      {reviewTarget && (
+        <div className="modal-backdrop" onClick={() => setReviewTarget(null)}>
+          <form className="card review-modal" onSubmit={handleReview} onClick={(e) => e.stopPropagation()}>
+            <h3>Leave a Review</h3>
+            <div className="form-group">
+              <label>Rating</label>
+              <select value={reviewForm.rating} onChange={(e) => setReviewForm((f) => ({ ...f, rating: e.target.value }))}>
+                {[5, 4, 3, 2, 1].map((rating) => (
+                  <option key={rating} value={rating}>{rating} stars</option>
+                ))}
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Comment</label>
+              <textarea value={reviewForm.comment} onChange={(e) => setReviewForm((f) => ({ ...f, comment: e.target.value }))} />
+            </div>
+            <div className="modal-actions">
+              <button type="button" className="btn btn-ghost" onClick={() => setReviewTarget(null)}>Cancel</button>
+              <button type="submit" className="btn btn-primary"><Star size={15} /> Submit</button>
+            </div>
+          </form>
+        </div>
       )}
     </div>
   );

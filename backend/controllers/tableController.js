@@ -77,6 +77,52 @@ class TableController {
       res.status(500).json({ error: error.message });
     }
   }
+
+  async getFloorPlan(req, res) {
+    try {
+      const { date, time, guests } = req.query;
+      const tables = await tableService.getFloorPlan(date, time, guests);
+      res.json(tables);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  async getTables(req, res) {
+    try {
+      const tables = await tableService.getTables();
+      res.json(tables);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  async createTable(req, res) {
+    try {
+      const table = await tableService.createTable(req.body);
+      res.status(201).json(table);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  }
+
+  async updateTable(req, res) {
+    try {
+      const table = await tableService.updateTable(req.params.id, req.body);
+      res.json(table);
+    } catch (error) {
+      res.status(error.message === 'Table not found' ? 404 : 400).json({ error: error.message });
+    }
+  }
+
+  async deleteTable(req, res) {
+    try {
+      const result = await tableService.deleteTable(req.params.id);
+      res.json(result);
+    } catch (error) {
+      res.status(404).json({ error: error.message });
+    }
+  }
 }
 
 module.exports = new TableController();

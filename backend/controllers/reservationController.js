@@ -250,6 +250,35 @@ class ReservationController {
       res.status(404).json({ error: error.message });
     }
   }
+
+  async getAllReservations(req, res) {
+    try {
+      const reservations = await reservationService.getAllReservations(req.query.search || '');
+      res.json(reservations);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  async getAdminDashboard(req, res) {
+    try {
+      const date = req.query.date || new Date().toISOString().slice(0, 10);
+      const dashboard = await reservationService.getAdminDashboard(date);
+      res.json(dashboard);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  async updateReservationStatus(req, res) {
+    try {
+      const reservation = await reservationService.updateReservationStatus(req.params.id, req.body.status);
+      res.json(reservation);
+    } catch (error) {
+      const status = error.message === 'Reservation not found' ? 404 : 400;
+      res.status(status).json({ error: error.message });
+    }
+  }
 }
 
 module.exports = new ReservationController();

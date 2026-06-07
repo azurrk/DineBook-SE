@@ -172,6 +172,25 @@ class AuthController {
       res.status(404).json({ error: error.message });
     }
   }
+
+  async getCustomers(req, res) {
+    try {
+      const customers = await authService.getCustomers();
+      res.json(customers);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  }
+
+  async setCustomerActive(req, res) {
+    try {
+      const { active } = req.body;
+      const user = await authService.setCustomerActive(req.params.id, Boolean(active));
+      res.json(user);
+    } catch (error) {
+      res.status(404).json({ error: error.message });
+    }
+  }
 }
 
 module.exports = new AuthController();

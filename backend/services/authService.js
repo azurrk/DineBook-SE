@@ -11,7 +11,7 @@ class AuthService {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await userRepository.create(name, email, hashedPassword);
-    const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET);
+    const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET);
 
     return { user, token };
   }
@@ -22,13 +22,17 @@ class AuthService {
       throw new Error('Invalid email or password');
     }
 
+    if (!user.active) {
+      throw new Error('Account is deactivated');
+    }
+
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
       throw new Error('Invalid email or password');
     }
 
     const { password: _, ...userWithoutPassword } = user;
-    const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET);
+    const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET);
 
     return { user: userWithoutPassword, token };
   }
@@ -39,6 +43,18 @@ class AuthService {
       throw new Error('User not found');
     }
     return { user };
+  }
+
+  async getCustomers() {
+    return await userRepository.findAllCustomers();
+  }
+
+  async setCustomerActive(userId, active) {
+    const user = await userRepository.setActive(userId, active);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    return user;
   }
 
   verifyToken(token) {
