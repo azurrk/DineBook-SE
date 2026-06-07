@@ -1,4 +1,4 @@
-const API_BASE_URL = 'https://dinebook-se.onrender.com';
+const API_BASE_URL = 'https://dinebook-se.onrender.com/api';
 
 class ApiService {
   constructor() {
