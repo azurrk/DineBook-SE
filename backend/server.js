@@ -56,19 +56,23 @@ async function migrateDB() {
     const sqlSkripta = fs.readFileSync(putanjaDoSqlFajla, 'utf8');
     
     await pool.query(sqlSkripta);
-    console.log('DB Schema created');
+    console.log('✅ DB Schema created');
   } catch (error) {
-    console.error('Error DB Schema', error);
+    console.error('❌ Error DB Schema', error);
   }
 }
 
+// Osiguraj da je PORT definisan iznad if bloka
+const PORT = process.env.PORT || 5000;
+
 if (require.main === module) {
-  migrateDB.then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`API Documentation available at http://localhost:${PORT}/api-docs`);
+  // DODATE ZAGRADE OVDJE: migrateDB()
+  migrateDB().then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+      console.log(`API Documentation available at http://localhost:${PORT}/api-docs`);
+    });
   });
-  })
 }
 
 module.exports = app;
