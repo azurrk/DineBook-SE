@@ -50,11 +50,25 @@ app.put('/api/admin/reservations/:id/status', authenticateToken, requireAdmin, r
 app.get('/api/admin/users', authenticateToken, requireAdmin, authController.getCustomers);
 app.put('/api/admin/users/:id/active', authenticateToken, requireAdmin, authController.setCustomerActive);
 
+async function migrateDB() {
+  try {
+    const putanjaDoSqlFajla = path.join(__dirname, 'schema.sql');
+    const sqlSkripta = fs.readFileSync(putanjaDoSqlFajla, 'utf8');
+    
+    await pool.query(sqlSkripta);
+    console.log('DB Schema created');
+  } catch (error) {
+    console.error('Error DB Schema', error);
+  }
+}
+
 if (require.main === module) {
+  migrateDB.then(() => {
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
     console.log(`API Documentation available at http://localhost:${PORT}/api-docs`);
   });
+  })
 }
 
 module.exports = app;
